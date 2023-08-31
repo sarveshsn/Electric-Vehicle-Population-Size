@@ -1,0 +1,398 @@
+---
+title: "Final_Project"
+author: "Sarvesh Naik 22204841"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning=FALSE)
+library(tidyverse)
+```
+
+**PART 1 : ANALYSIS**
+
+We will be working on Electric Vehicle Population Size history by County data for the state of Washington USA. The dataset consists of historical data from Jan 2018 to November 2022. 
+```{r }
+
+# Loading and reading the dataset
+
+df <- read.csv("Electric_Vehicle_Population_Size_History_By_County.csv")
+
+
+#Cleaning and transforming the dataset
+
+#Converting to numeric values
+df$Battery.Electric.Vehicles..BEVs. <- as.numeric(as.character(df$Battery.Electric.Vehicles..BEVs.))
+df$Electric.Vehicle..EV..Total <- as.numeric(as.character(df$Electric.Vehicle..EV..Total))
+df$Plug.In.Hybrid.Electric.Vehicles..PHEVs.   <- as.numeric(as.character(df$Plug.In.Hybrid.Electric.Vehicles..PHEVs.))
+
+df <- replace(df, is.na(df),0) # Replacing all NA values with zero
+
+
+drops <- c("Total.Vehicles","Percent.Electric.Vehicles","Non.Electric.Vehicle.Total")
+df<- df[ , !(names(df) %in% drops)]
+
+##Columns dropped because after converting to numeric, the data showed all values as NA. 
+
+
+library(lubridate)
+df$Date <- mdy(df$Date) # Changing character date format to numeric for improved readability.
+
+```
+```{r }
+
+county<-unique(df$County)
+
+unique(df$Vehicle.Primary.Use)
+
+```
+- So as we can see the dataset has data of 39 counties from the state of Washington. 
+- Electric vehicles for use are divided in sub-categories of Passenger and Truck(or Commercial) vehicles.
+
+
+Total Electric Vehicles Registered in the counties - Passenger and Commercial(Truck) 
+```{r fig.height = 8, fig.width = 16}
+
+df_start <- df %>% filter(Date == "2018-01-31") # getting earliest values
+df_end <- df %>% filter(Date == "2022-11-30") # getting latest values
+
+p1 <- ggplot(df_start) +
+    geom_bar( aes(x=County, y=Electric.Vehicle..EV..Total , group=Vehicle.Primary.Use , fill=Vehicle.Primary.Use), stat="identity",  position = "dodge", alpha=1) + ggtitle("Total Registered vehicles registered in Washington at the start of 2018")
+p1 + scale_x_discrete(guide = guide_axis(angle = 90))
+
+p2 <- ggplot(df_end) +
+    geom_bar( aes(x=County, y=Electric.Vehicle..EV..Total , group=Vehicle.Primary.Use , fill=Vehicle.Primary.Use), stat="identity",  position = "dodge", alpha=1) + ggtitle("Total Registered vehicles registered in Washington by the end of November 2022")
+p2 + scale_x_discrete(guide = guide_axis(angle = 90))
+
+
+```
+- It can be inferred from both the plots that there has been a considerable rise in the population of Electric Vehicles in the state of Washington from 2018 to 2022. 
+
+#Early data
+- From the plot of January 2018, we can see that out of 39 counties, 38 counties have population of only Passenger Electric Vehicles. King is the only county which has small population of Electric Vehicles for Commercial use. 
+
+- The counties of Thurston and Whatcom had the greatest density of EV Vehicle population whereas counties such as Garfield and Clark had no EV Vehicle population. 
+
+#Latest data
+- From the latest data that we have i.e from November 2022, we not only observe an overall increase in EV Vehicle population but notably record increase in population of EV Vehicles for Commercial Use. 
+
+- County King recorded the highest Commercial EV Vehicle population followed by county Pierce.
+
+- The county of Clallam sees the highest comparative growth in the population of Passenger EVs followed closely by County San Juan.  
+
+
+Visual Comparison of Registered Electric Vehicle population in the 6 counties -Passenger and Commercial(Truck) 
+```{r fig.height = 8, fig.width = 14}
+
+#Loading required libraries
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+library(viridis)
+
+# Getting data subsets for 6 Counties in Washington
+
+df_adams <- df %>% filter(County == "Adams")
+
+df_mason <- df %>% filter(County == "Mason")
+
+df_columbia <- df %>% filter(County == "Columbia")
+
+df_douglas <- df %>% filter(County == "Douglas")
+
+df_franklin <- df %>% filter(County == "Franklin")
+
+df_lincoln <- df %>% filter(County == "Lincoln")
+
+# Plotting line graphs
+
+p1 <-df_adams %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use)) +
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Adams County") +
+    ylab("Number of registered EVs registered")
+p1
+
+p2 <- df_mason %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use)) +
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Mason County") +
+    ylab("Number of registered EVs registered")
+p2
+
+p3 <- df_columbia %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use))+
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Columbia County") +
+    ylab("Number of registered EVs registered")
+p3
+
+p4 <- df_douglas %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use))+
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Douglas County") +
+    ylab("Number of registered EVs registered")
+p4
+
+p5<-df_franklin %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use)) +
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Frankiln County") +
+    ylab("Number of registered EVs registered")
+p5
+
+p6<-df_lincoln %>% ggplot( aes(x=Date, y=Electric.Vehicle..EV..Total, group=Vehicle.Primary.Use, color=Vehicle.Primary.Use)) +
+    geom_line(size=1) + geom_point() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Registered EVs registered in Lincoln County") +
+    ylab("Number of registered EVs registered")
+p6
+```
+From the above line graphs, it can be inferred that :
+
+- All the 6 counties have seen an exponential increase in Passenger EV Vehicle Population. 
+- All the counties observed here only recorded a population of Commercial EV Vehicles post 2022 except for Columbia which is yet to have any Commercial EV vehicle registration. 
+- County of Franklin observed a sudden increase in Passenger EV Vehicle registration from late 2020. 
+
+
+```{r}
+
+# Creating new columns for percentage of Battery EVs and Plug in Hybrid EVs 
+df$per_BEVs <- df$Battery.Electric.Vehicles..BEVs./(df$Electric.Vehicle..EV..Total) *100
+df$per_PHEVs <- df$Plug.In.Hybrid.Electric.Vehicles..PHEVs./(df$Electric.Vehicle..EV..Total)*100
+
+#Getting summary of data
+summary(df)
+
+# Getting the data of County with recorded highest population of Electric vehicles in the dataset
+
+max1 <- df[which.max(df$Battery.Electric.Vehicles..BEVs.),]
+max1
+
+max2 <-  df[which.max(df$Plug.In.Hybrid.Electric.Vehicles..PHEVs.),]
+max2
+```
+
+- County of Kitsap recorded the highest population of Passenger BEVs - 997 on 31st March 2019.
+- County of Pierce recorded the highest population of Passenger Plug-in-Hybrid EVs - 994 on 31st January 2018. 
+
+
+
+
+
+**PART 2: R PACKAGE**
+
+Patchwork: The Composer of Plots
+
+- The 'ggplot2' package provides a strong API for sequentially building up a plot, but does not concern itself with composition of multiple plots. 'patchwork' is a package that expands the API to allow for arbitrarily complex composition of plots by, among others, providing mathematical operators for combining multiple plots. Other packages that try to address this need (but with a different approach) are 'gridExtra' and 'cowplot'.
+
+Some key functions of this package :
+
+- 'plot_layout' Define the grid to compose plots in
+
+Description :
+To control how different plots are laid out, you need to add a layout specification. If you are nesting
+grids, the layout is scoped to the current nesting level.
+
+Usage :
+
+plot_layout(ncol = NULL,nrow = NULL,byrow = NULL,widths = NULL,heights = NULL,guides = NULL,tag_level = NULL,design = NULL)
+
+- 'guide_area' Add an area to hold collected guides
+
+Description :
+Using the guides argument in plot_layout() you can collect and collapse guides from plots. By
+default these guides will be put on the side like with regular plots, but by adding a guide_area()
+to the plot you can tell patchwork to place the guides in that area instead. If guides are not collected
+or no guides exists to collect it behaves as a standard plot_spacer() instead.
+
+Usage :
+guide_area()
+
+- 'plot_annotation'  Annotate the final patchwork
+
+Description :
+The result of this function can be added to a patchwork using + in the same way as plot_layout(),
+but unlike plot_layout() it will only have an effect on the top level plot. As the name suggests it
+controls different aspects of the annotation of the final plot, such as titles and tags.
+
+Usage :
+plot_annotation(title = NULL,subtitle = NULL,caption = NULL,tag_levels = NULL,tag_prefix = NULL,tag_suffix = NULL,tag_sep = NULL,
+theme = NULL
+)
+
+Details :
+Tagging of subplots is done automatically and following the order of the plots as they are added.
+When the plot contains nested layouts the tag_level argument in the nested plot_layout will define
+whether enumeration should continue as usual or add a new level. The format of the levels are
+defined with tag_levels argument in plot_annotation
+
+Value :
+A plot_annotation object
+
+
+```{r fig.height = 20, fig.width = 20}
+
+#Loading the patchwork package
+library(patchwork)
+
+#PLOTTING DENSITY PLOTS FOR PHEVs POPULATION
+p1 <- df_adams %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Adams County")+
+    geom_point(alpha=0.7) + 
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+p2 <- df_mason %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Mason County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+p3<- df_columbia %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Columbia County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+p4<- df_douglas %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Douglas County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+p5<- df_franklin %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Franklin County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+p6 <-df_lincoln %>%
+  arrange(desc(Plug.In.Hybrid.Electric.Vehicles..PHEVs.)) %>%
+  ggplot(aes(x=Date, y=Plug.In.Hybrid.Electric.Vehicles..PHEVs., size=Plug.In.Hybrid.Electric.Vehicles..PHEVs., color=Vehicle.Primary.Use)) + ggtitle("PHEVs registered population density in Lincoln County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of PHEVs")
+
+# Use plot_layout to change how the grid is filled out and plot_annotation for Figure title and caption
+p1 + p2 + p3 + p4 + p5 + p6  + plot_layout(ncol = 2,nrow = 3, byrow = TRUE) + plot_annotation(title = 'Population of PHEVs in 6 counties',caption = 'made with patchwork',theme = theme(plot.title = element_text(size = 25)))
+```
+
+```{r fig.height = 20, fig.width = 20}
+
+
+#PLOTTING DENSITY PLOTS FOR BEVs POPULATION
+p1 <- df_adams %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Adams County")+
+    geom_point(alpha=0.7) + 
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+p2 <- df_mason %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Mason County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+p3<- df_columbia %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Columbia County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+p4<- df_douglas %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Douglas County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+p5<- df_franklin %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Franklin County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+p6 <-df_lincoln %>%
+  arrange(desc(Battery.Electric.Vehicles..BEVs.)) %>%
+  ggplot(aes(x=Date, y=Battery.Electric.Vehicles..BEVs., size=Battery.Electric.Vehicles..BEVs., color=Vehicle.Primary.Use)) + ggtitle("BEVs registered population density in Lincoln County") +
+    geom_point(alpha=0.7) +
+    scale_size(range = c(.01, 10), name="Population of BEVs")
+
+# Use plot_layout to change how the grid is filled out and plot_annotation for Figure title and caption
+p1 + p2 + p3 + p4 + p5 + p6  + plot_layout(ncol = 2,nrow = 3, byrow = TRUE) + plot_annotation(title = 'Population of BEVs for 6 counties',caption = 'made with patchwork',theme = theme(plot.title = element_text(size = 25)))
+
+```
+
+**PART 3 - FUNCTIONS/PROGRAMMING**
+
+```{r }
+
+# Making a dataframe of interest. 
+
+main <- df %>% filter(Vehicle.Primary.Use == "Passenger")
+main <- main[c("Date","Electric.Vehicle..EV..Total","Battery.Electric.Vehicles..BEVs.","Plug.In.Hybrid.Electric.Vehicles..PHEVs.")]
+
+library(data.table)
+DT <- as.data.table(main)
+# which columns are numeric 
+numeric_cols <- which(sapply(DT, is.numeric))
+lmdf <- DT[, lapply(.SD, sum), by = Date, .SDcols = numeric_cols] #Merging duplicate rows and getting sum
+head(lmdf)
+
+#Now we have total number of electric vehicles and total BEVs in Washington for each month from Jan 2018 to Nov 2022
+
+```
+Now we will fit a linear model to this dataset to see how the model performs for Total BEVs with Total EVs from 2018 to 2022
+
+```{r }
+
+lm_EV <- lm( Battery.Electric.Vehicles..BEVs. ~ Electric.Vehicle..EV..Total  , data = lmdf)
+
+summary(lm_EV)
+
+```
+
+```{r  fig.height = 8, fig.width = 14}
+plot(predict(lm_EV),                                # Draw plot using Base R
+     lmdf$Battery.Electric.Vehicles..BEVs,
+     xlab = "Predicted Values of BEVs",
+     ylab = "Observed Values of BEVs")
+abline(a = 0,                                        # Add straight line
+       b = 1,
+       col = "red",
+       lwd = 2)
+
+
+```
+- From the observed linear model summary and predicted vs Observed values for Total Number of Battery EVs, we can make out that there is a positive correlation between the Total EVs and Total BEVs. 
+- The Adjusted R-squared is not ideal. It shows that the model did not perform well. 
+- With real life data and such a varied and vast data, finding the best fit model is difficult. 
+
+```{r }
+
+lm_PHEV <- lm( Plug.In.Hybrid.Electric.Vehicles..PHEVs. ~ Electric.Vehicle..EV..Total  , data = lmdf)
+
+summary(lm_PHEV)
+
+
+```
+
+
+```{r fig.height = 8, fig.width = 14 }
+plot(predict(lm_PHEV),                                
+     lmdf$Battery.Electric.Vehicles..BEVs,
+     xlab = "Predicted Values of PHEVs",
+     ylab = "Observed Values of PHEVs")
+abline(a = 0,                                 # Add straight line
+       b = 1,
+       col = "red",
+       lwd = 2)
+
+
+```
+- From the observed linear model summary and predicted vs Observed values for Total Number of Plug In Hybrid EVs, we can make out that there is a positive correlation between the Total EVs and Total PHEVs. 
+- The Adjusted R-squared is not ideal but it is better than what we got for BEVs . It shows that the model did not perform exceptionally well. 
+- With real life data and such a varied and vast data, finding the best fit model is difficult.

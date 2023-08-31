@@ -38,8 +38,9 @@ install.packages(c("ggplot2", "dplyr", "lubridate", "hrbrthemes", "viridis", "pa
 
 ```
 
-3. Open the R script `Electric Vehicles.rmd` in an R-compatible environment (e.g., RStudio).
-4. Execute the code step by step or in its entirety to see the results and visualizations.
+3. Download the csv file from this repository and save the file in the folder as the .rmd file.
+4. Open the R script `Electric Vehicles.rmd` in an R-compatible environment (e.g., RStudio).
+5. Execute the code step by step or in its entirety to see the results and visualizations.
 
 ## Author
 

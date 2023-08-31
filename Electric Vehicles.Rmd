@@ -326,7 +326,7 @@ p1 + p2 + p3 + p4 + p5 + p6  + plot_layout(ncol = 2,nrow = 3, byrow = TRUE) + pl
 
 ```
 
-**PART 3 - FUNCTIONS/PROGRAMMING**
+**PART 3 - REGRESSION**
 
 ```{r }
 

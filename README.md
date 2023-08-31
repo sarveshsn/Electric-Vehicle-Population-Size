@@ -5,7 +5,7 @@
 
 ## Overview
 
-This repository contains the code and analysis for the Final Project on Electric Vehicle Population Analysis by Sarvesh Naik , completed on December 22, 2022. The project focuses on analyzing the historical data of Electric Vehicle (EV) population size by county in the state of Washington, USA, from January 2018 to November 2022.
+This repository contains the code and analysis on Electric Vehicle Population by Sarvesh Naik , completed on December 22, 2022. The project focuses on analyzing the historical data of Electric Vehicle (EV) population size by county in the state of Washington, USA, from January 2018 to November 2022.
 
 ## Analysis
 

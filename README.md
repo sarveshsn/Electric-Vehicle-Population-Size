@@ -44,7 +44,7 @@ install.packages(c("ggplot2", "dplyr", "lubridate", "hrbrthemes", "viridis", "pa
 
 ## Author
 
-- **Sarvesh Naik** 
+- **Sarvesh Sairam Naik** 
 
 
 

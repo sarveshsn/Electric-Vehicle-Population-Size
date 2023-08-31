@@ -22,7 +22,7 @@ In this section, the provided R code is used to perform an exploratory analysis 
 
 This section introduces the `patchwork` R package, which facilitates the composition of multiple plots into a single visualization. The package is used to create density plots for Plug-In Hybrid Electric Vehicles (PHEVs) and Battery Electric Vehicles (BEVs) populations in different counties. The resulting plots demonstrate the population density changes over the years.
 
-### Part 3: Functions/Programming
+### Part 3: Regression
 
 In this section, linear regression models are fitted to the data to explore the relationship between the total number of EVs and the populations of BEVs and PHEVs. The code demonstrates how to fit the models, summarize the results, and visualize the observed vs. predicted values.
 

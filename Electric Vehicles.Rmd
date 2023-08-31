@@ -1,6 +1,6 @@
 ---
-title: "Final_Project"
-author: "Sarvesh Naik 22204841"
+title: "Electric Vehicle Population Size EDA"
+author: "Sarvesh Naik"
 date: "`r Sys.Date()`"
 output:
   word_document: default

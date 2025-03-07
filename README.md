@@ -44,9 +44,12 @@ install.packages(c("ggplot2", "dplyr", "lubridate", "hrbrthemes", "viridis", "pa
 4. Open the R script `Electric Vehicles.rmd` in an R-compatible environment (e.g., RStudio).
 5. Execute the code step by step or in its entirety to see the results and visualizations.
 
-## Author
+## License
+This project is open-source and available under the [MIT License](LICENSE).
 
-- **Sarvesh Sairam Naik** 
+---
 
+**Author:** Sarvesh Sairam Naik  
+**GitHub Repository:** [GitHub Link](https://github.com/sarveshsn)
 
 
